@@ -1,0 +1,88 @@
+package grafica;
+
+import javax.swing.*;
+
+//import static grafica.MenuPrincipal.coleccion;	en todos los lugares que dice coleccion ahora debe decir listado
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+
+import logica.*;
+
+
+
+public class VerPersonasTabla extends JInternalFrame{
+	
+	private JPanel pnlCentral;
+	private DefaultTableModel miModelo;	//modelo
+	private JTable tablaPersonas;	//tabla
+	private JScrollPane scrPanel;//barra de desplazamiento		
+
+	private JButton btnActualizar;
+	
+	public VerPersonasTabla(){
+		setClosable(true);
+		setBounds(600,0,400,800);//pos y tamaño
+		iniciarComponentes();
+		iniciarManejadoresEventos();
+	}
+	
+	public void iniciarComponentes(){
+		setTitle("Listado de Personas");
+		setResizable(true);
+		/*Instanciamos un panel y le aplicamos BorderLayout */
+		pnlCentral =new JPanel();
+		pnlCentral.setLayout(new BorderLayout());
+		//instanciamos un botón 
+		btnActualizar = new JButton("Actualizar Listado");
+		getContentPane().add(btnActualizar, BorderLayout.SOUTH);
+		iniciarTabla();
+			
+	}
+			
+	private void iniciarManejadoresEventos() {
+		btnActualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargarTabla();
+			}
+		});
+	}
+	
+	public void iniciarTabla(){
+		
+		scrPanel = new JScrollPane();
+		pnlCentral.add(scrPanel, BorderLayout.CENTER);
+	
+		tablaPersonas = new JTable();
+		scrPanel.setViewportView(tablaPersonas);
+       
+		getContentPane().add(pnlCentral, BorderLayout.CENTER);
+		pack();		
+		String titulos[]={"Cedula","Nombre", "Apellido"};
+		miModelo=new DefaultTableModel(null,titulos);
+		tablaPersonas.setModel(miModelo);
+	}
+	
+	private void cargarTabla() {
+		PersonaDAO pDAO=new PersonaDAO();						//agregue
+		ListaPersonas listado=pDAO.listarPersonas();  			//cambie
+		
+		String fila[]=new String[miModelo.getColumnCount()];
+       	try{
+	      	for(int i=0;i<listado.cantidad();i++){
+	      		fila[0]=String.valueOf(listado.devolver(i).
+	      				getCedula());
+	      		fila[1]=listado.devolver(i).getNombre();
+	      		fila[2]=listado.devolver(i).getApellido();
+	      		miModelo.addRow(fila);
+	      	}
+	        tablaPersonas.setModel(miModelo);
+       	}catch (Exception e) {
+       		System.out.println("error"+e);
+       	}
+	}
+}
