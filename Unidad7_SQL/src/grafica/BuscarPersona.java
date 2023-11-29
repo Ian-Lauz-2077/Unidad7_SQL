@@ -6,6 +6,7 @@ import logica.*;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +16,8 @@ public class BuscarPersona extends JInternalFrame{
 	private JPanel pnlSuperior, pnlCentral;
 	private JLabel lblCedula, lblNombre, lblApellido;
 	private JTextField txtCedula, txtNombre, txtApellido;
-	private JButton btnBuscar;
+	private JButton btnBuscar, btnBorrar;
+	private DefaultTableModel miModelo;
 			
 	
 	public BuscarPersona(){
@@ -28,6 +30,10 @@ public class BuscarPersona extends JInternalFrame{
 		iniciarManejadoresEventos();
 		pack();
 	}
+	
+	private void BorrarPersona() {
+		
+	}
 
 	private void iniciarComponentes() {
 		
@@ -37,15 +43,18 @@ public class BuscarPersona extends JInternalFrame{
 		pnlSuperior.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 				
 		/*Definimos  los componentes del panel superior*/
-		lblCedula=new JLabel("Ingrese cÈdula:"); 
+		lblCedula=new JLabel("Ingrese c√©dula:"); 
 		txtCedula= new JTextField(10);
 		btnBuscar= new JButton();
 		btnBuscar.setText("Buscar");
+		btnBorrar= new JButton();
+		btnBorrar.setText("Borrar");
 						
 		/*agregamos los componentes del panel superior*/
 		pnlSuperior.add(lblCedula);
 		pnlSuperior.add(txtCedula);
 		pnlSuperior.add(btnBuscar);
+		pnlSuperior.add(btnBorrar);
 		
 		/*instanciamos el contenedor para los componentes de la parte central*/
 		pnlCentral=new JPanel();
@@ -57,12 +66,12 @@ public class BuscarPersona extends JInternalFrame{
 		lblNombre= new JLabel("Nombre:"); 
 		txtNombre= new JTextField();
 		txtNombre.setEditable(false);
-		txtNombre.setEnabled(false);
+		txtNombre.setEnabled(true);
 		
 		lblApellido= new JLabel("Apellido:");
 		txtApellido= new JTextField();
 		txtApellido.setEditable(false);
-		txtApellido.setEnabled(false);
+		txtApellido.setEnabled(true);
 		
 		/*Agregamos los componentes al Contenedor Central*/
 		pnlCentral.add(lblNombre);
@@ -93,11 +102,30 @@ public class BuscarPersona extends JInternalFrame{
 						JOptionPane.showMessageDialog(null, "Persona no"
 						+ " encontrada \n");
 				}catch (Exception e1){
-							JOptionPane.showMessageDialog(null, "La cÈdula "
-							+ "debe ser numÈrica  \n");
+							JOptionPane.showMessageDialog(null, "La c√©dula "
+							+ "debe ser num√©rica  \n");
 				}
 			}
 				
+		});
+		btnBorrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				PersonaVO pAux=new PersonaVO();
+				PersonaDAO pDAO=new PersonaDAO();
+				int borrarCedula = Integer.parseInt(txtCedula.getText());
+				
+				try {
+					pAux=pDAO.buscarXCedula(borrarCedula);
+					if(pAux!=null) {
+						pDAO.eliminarPersona(borrarCedula);
+						JOptionPane.showMessageDialog(null, "Borrado OK.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+					}else
+						JOptionPane.showMessageDialog(null, "Persona no encontrada.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+				}catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "La c√©dula debe ser num√©rica.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+			}
 		});
 	}
 			
