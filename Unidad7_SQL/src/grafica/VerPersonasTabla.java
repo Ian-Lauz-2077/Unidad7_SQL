@@ -26,7 +26,7 @@ public class VerPersonasTabla extends JInternalFrame{
 	
 	public VerPersonasTabla(){
 		setClosable(true);
-		setBounds(600,0,400,800);//pos y tamaño
+		setBounds(600,0,400,800);//pos y tamaÃ±o
 		iniciarComponentes();
 		iniciarManejadoresEventos();
 	}
@@ -37,7 +37,7 @@ public class VerPersonasTabla extends JInternalFrame{
 		/*Instanciamos un panel y le aplicamos BorderLayout */
 		pnlCentral =new JPanel();
 		pnlCentral.setLayout(new BorderLayout());
-		//instanciamos un botón 
+		//instanciamos un botÃ³n 
 		btnActualizar = new JButton("Actualizar Listado");
 		getContentPane().add(btnActualizar, BorderLayout.SOUTH);
 		iniciarTabla();
@@ -47,7 +47,10 @@ public class VerPersonasTabla extends JInternalFrame{
 	private void iniciarManejadoresEventos() {
 		btnActualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(miModelo.getRowCount() != 0)
+				limpiarTabla();
 				cargarTabla();
+				
 			}
 		});
 	}
@@ -74,8 +77,7 @@ public class VerPersonasTabla extends JInternalFrame{
 		String fila[]=new String[miModelo.getColumnCount()];
        	try{
 	      	for(int i=0;i<listado.cantidad();i++){
-	      		fila[0]=String.valueOf(listado.devolver(i).
-	      				getCedula());
+	      		fila[0]=String.valueOf(listado.devolver(i).getCedula());
 	      		fila[1]=listado.devolver(i).getNombre();
 	      		fila[2]=listado.devolver(i).getApellido();
 	      		miModelo.addRow(fila);
@@ -84,5 +86,11 @@ public class VerPersonasTabla extends JInternalFrame{
        	}catch (Exception e) {
        		System.out.println("error"+e);
        	}
+	}
+	
+	private void limpiarTabla() {
+		int var = miModelo.getRowCount();
+		for(int i = 0; i < var; i++)
+		miModelo.removeRow(0);
 	}
 }
